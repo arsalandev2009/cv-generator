@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional CV Generator</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: Arial, sans-serif;
+}
+
+body{
+  background:#f4f4f4;
+  display:flex;
+  justify-content:center;
+  padding:40px;
+}
+
+/* FORM SECTION */
+.container{
+  width:100%;
+  max-width:900px;
+  background:white;
+  padding:30px;
+  border-radius:10px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+h2{
+  margin-bottom:15px;
+}
+
+input, textarea{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border:1px solid #ccc;
+  border-radius:5px;
+}
+
+button{
+  padding:10px 15px;
+  border:none;
+  background:#333;
+  color:white;
+  cursor:pointer;
+  border-radius:5px;
+  margin-right:5px;
+}
+
+button:hover{
+  opacity:0.9;
+}
+
+/* CV DESIGN */
+.cv{
+  width:800px;
+  background:#fff;
+  margin-top:40px;
+  padding:40px;
+  border:1px solid #ddd;
+}
+
+.cv-header{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:2px solid #000;
+  padding-bottom:20px;
+  margin-bottom:20px;
+}
+
+.cv-name{
+  font-size:28px;
+  font-weight:bold;
+}
+
+.cv-section{
+  margin-bottom:20px;
+}
+
+.cv-section h3{
+  border-bottom:1px solid #000;
+  padding-bottom:5px;
+  margin-bottom:10px;
+  font-size:18px;
+}
+
+.cv ul{
+  padding-left:20px;
+}
+
+.print-btn{
+  margin-top:20px;
+}
+
+/* ✅ PRINT FIX */
+@media print {
+
+  body * {
+    visibility: hidden;
+  }
+
+  #cv, #cv * {
+    visibility: visible;
+  }
+
+  #cv {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  .print-btn {
+    display: none;
+  }
+
+  .container {
+    display: none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>CV Generator</h2>
+
+<input type="text" id="fullName" placeholder="Full Name">
+<input type="text" id="address" placeholder="Address">
+<input type="text" id="phone" placeholder="Phone">
+<input type="text" id="cnic" placeholder="CNIC">
+<textarea id="objective" placeholder="Objective"></textarea>
+
+<h3>Education</h3>
+<div id="educationContainer"></div>
+<button onclick="addEducation()">Add Education</button>
+
+<h3>Skills</h3>
+<div id="skillsContainer"></div>
+<button onclick="addSkill()">Add Skill</button>
+
+<br><br>
+<button onclick="generateCV()">Generate CV</button>
+
+<div id="output"></div>
+
+</div>
+
+<script>
+
+/* ADD EDUCATION */
+function addEducation(){
+  const div = document.createElement("div");
+  div.innerHTML = `
+    <input type="text" placeholder="Degree / Level">
+    <input type="text" placeholder="Institute Name">
+    <input type="text" placeholder="Year">
+  `;
+  document.getElementById("educationContainer").appendChild(div);
+}
+
+/* ADD SKILL */
+function addSkill(){
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "Skill";
+  document.getElementById("skillsContainer").appendChild(input);
+}
+
+/* GENERATE CV */
+function generateCV(){
+
+  const name = document.getElementById("fullName").value;
+  const address = document.getElementById("address").value;
+  const phone = document.getElementById("phone").value;
+  const cnic = document.getElementById("cnic").value;
+  const objective = document.getElementById("objective").value;
+
+  const educationDivs = document.querySelectorAll("#educationContainer div");
+  let educationHTML = "<ul>";
+
+  educationDivs.forEach(div=>{
+    const inputs = div.querySelectorAll("input");
+    educationHTML += `<li>
+      <strong>${inputs[0].value}</strong> - ${inputs[1].value} (${inputs[2].value})
+    </li>`;
+  });
+
+  educationHTML += "</ul>";
+
+  const skillsInputs = document.querySelectorAll("#skillsContainer input");
+  let skillsHTML = "<ul>";
+
+  skillsInputs.forEach(input=>{
+    skillsHTML += `<li>${input.value}</li>`;
+  });
+
+  skillsHTML += "</ul>";
+
+  document.getElementById("output").innerHTML = `
+    
+    <div id="cv" class="cv">
+
+      <div class="cv-header">
+        <div>
+          <div class="cv-name">${name}</div>
+        </div>
+        <div>
+          ${address}<br>
+          ${phone}<br>
+          ${cnic}
+        </div>
+      </div>
+
+      <div class="cv-section">
+        <h3>Objective</h3>
+        <p>${objective}</p>
+      </div>
+
+      <div class="cv-section">
+        <h3>Education</h3>
+        ${educationHTML}
+      </div>
+
+      <div class="cv-section">
+        <h3>Skills</h3>
+        ${skillsHTML}
+      </div>
+
+      <div class="cv-section">
+        <h3>Reference</h3>
+        <p>Will be provided on request</p>
+      </div>
+
+    </div>
+
+    <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+  `;
+}
+
+/* default fields */
+addEducation();
+addSkill();
+
+</script>
+
+</body>
+</html>
